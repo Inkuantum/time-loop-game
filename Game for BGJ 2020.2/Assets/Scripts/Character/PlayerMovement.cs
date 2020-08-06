@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float runSpeed = 40f;
 
+    public int keys = 0;
+
     float horizontalMove = 0f;
 
     float verticalMove = 0f;
@@ -65,19 +67,36 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag.Equals("Door"))
         {
             inDoor = true;
-            Debug.Log(inDoor);
             Transform doorParent = collision.gameObject.transform.parent;
-            for (int i = 0; i < doorParent.childCount; i++)
+            if (doorParent.gameObject.tag.Equals("Locked"))
             {
-                if (doorParent.GetChild(i).gameObject != collision.gameObject)
+                if(keys > 0)
                 {
-                    if (doorParent.GetChild(i).gameObject.name.Equals(collision.gameObject.name))
+                    Debug.Log("Unlock!");
+                    Transform newDoorParent = doorParent.parent;
+                    GameObject.Destroy(doorParent.gameObject);
+                    collision.gameObject.transform.parent = newDoorParent;
+                    collision.gameObject.GetComponent<Collider2D>().enabled = true;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < doorParent.childCount; i++)
+                {
+                    if (doorParent.GetChild(i).gameObject != collision.gameObject)
                     {
-                        linkedDoor = doorParent.GetChild(i);
-                        Debug.Log(linkedDoor.position);
+                        if (doorParent.GetChild(i).gameObject.name.Equals(collision.gameObject.name))
+                        {
+                            linkedDoor = doorParent.GetChild(i);
+                            Debug.Log(linkedDoor.position);
+                        }
                     }
                 }
             }
+        }else if (collision.gameObject.tag.Equals("Key"))
+        {
+            keys++;
+            Destroy(collision.gameObject);
         }
 
     }
@@ -86,7 +105,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.tag.Equals("Door"))
         {
-            inDoor = false;
             Debug.Log(inDoor);
             linkedDoor = null;
         }
