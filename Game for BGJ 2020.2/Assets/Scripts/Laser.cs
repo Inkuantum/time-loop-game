@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
+   public Transform linkedLaser;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,11 +14,11 @@ public class Laser : MonoBehaviour
             {
                 if (transform.parent.GetChild(i).gameObject.name.Equals(this.gameObject.name))
                 {
-                    Debug.Log("Found Laser");
-                    Transform linkedLaser = transform.parent.GetChild(i);
+                    linkedLaser = transform.parent.GetChild(i);
                     Transform line = transform.GetChild(0);
                     LineRenderer lineRender = line.GetComponent<LineRenderer>();
-                    lineRender.SetPosition(1, linkedLaser.localPosition);
+             
+                    lineRender.SetPosition(1, linkedLaser.position - transform.position);
                 }
             }
         }

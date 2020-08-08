@@ -8,6 +8,9 @@ TagManager:
   - Key
   - Locked
   - Laser
+  - Button
+  - Spikes
+  - Hostile
   layers:
   - Default
   - TransparentFX
@@ -18,7 +21,7 @@ TagManager:
   - 
   - 
   - Player
-  - 
+  - Obstacle
   - 
   - 
   - 

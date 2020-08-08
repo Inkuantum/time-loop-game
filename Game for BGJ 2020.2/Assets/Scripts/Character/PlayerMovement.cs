@@ -19,7 +19,11 @@ public class PlayerMovement : MonoBehaviour
 
     bool inDoor = false;
 
+    bool inButton = false;
+
     Transform linkedDoor;
+
+    Transform line;
 
     // Update is called once per frame
     void Update()
@@ -45,21 +49,26 @@ public class PlayerMovement : MonoBehaviour
                     transform.position = linkedDoor.position;
                     verticalMove = 0;
                 }
+            }else if (inButton == true)
+            {
+                if(line != null)
+                {
+                    line.gameObject.SetActive(false);
+                }
             }
         }
 
+    }
+
+    private void FixedUpdate()
+    {
         controller.Move(horizontalMove * Time.fixedDeltaTime, false, jump);
         jump = false;
     }
 
-    public void OnLanding()
+    public void OnLand()
     {
         animator.SetBool("IsJumping", false);
-    }
-
-    void FixedUpdate()
-    {
-        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -72,7 +81,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 if(keys > 0)
                 {
-                    Debug.Log("Unlock!");
                     Transform newDoorParent = doorParent.parent;
                     GameObject.Destroy(doorParent.gameObject);
                     collision.gameObject.transform.parent = newDoorParent;
@@ -88,7 +96,6 @@ public class PlayerMovement : MonoBehaviour
                         if (doorParent.GetChild(i).gameObject.name.Equals(collision.gameObject.name))
                         {
                             linkedDoor = doorParent.GetChild(i);
-                            Debug.Log(linkedDoor.position);
                         }
                     }
                 }
@@ -97,6 +104,29 @@ public class PlayerMovement : MonoBehaviour
         {
             keys++;
             Destroy(collision.gameObject);
+        }else if (collision.gameObject.tag.Equals("Button"))
+        {
+            inButton = true;
+            string number = collision.gameObject.name.Split('#')[1];
+            Transform lasers = GameObject.Find("Future Spikes").transform;
+            for(int i = 0; i < lasers.childCount; i++)
+            {
+                if(lasers.GetChild(i).name.Equals("Laser #" + number))
+                {
+                    if(lasers.GetChild(i).transform.childCount > 0)
+                    {
+                        line = lasers.GetChild(i).transform.GetChild(0);
+                    }
+                }
+            }
+        }
+        else if (collision.gameObject.tag.Equals("Spikes"))
+        {
+            transform.position = new Vector3(0.37f, 0f, 0f);
+        }
+        else if (collision.gameObject.tag.Equals("Hostile"))
+        {
+            transform.position = new Vector3(0.37f, 0f, 0f);
         }
 
     }
@@ -105,8 +135,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.tag.Equals("Door"))
         {
-            Debug.Log(inDoor);
+            inDoor = false;
             linkedDoor = null;
+        }else if (collision.gameObject.tag.Equals("Button"))
+        {
+            inButton = false;
+            line = null;
         }
     }
 }

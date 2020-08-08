@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TimeRewind : MonoBehaviour
 {
@@ -8,10 +9,13 @@ public class TimeRewind : MonoBehaviour
 
     public int activeHouse = 0;
 
+    public Canvas canvas;
+
     // Start is called before the first frame update
     void Start()
     {
         ChangeHouseState();
+        canvas.transform.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -22,6 +26,8 @@ public class TimeRewind : MonoBehaviour
             activeHouse++;
             if (activeHouse >= houses.Count) activeHouse = 0;
             ChangeHouseState();
+            canvas.transform.gameObject.SetActive(true);
+            StartCoroutine(DisableCanvas(2f * Time.deltaTime));
         }
     }
 
@@ -43,5 +49,12 @@ public class TimeRewind : MonoBehaviour
                 }
             }
         }
+    }
+
+    IEnumerator DisableCanvas(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        canvas.transform.gameObject.SetActive(false);
     }
 }
