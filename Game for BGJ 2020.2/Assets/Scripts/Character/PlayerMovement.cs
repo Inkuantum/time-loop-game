@@ -4,28 +4,30 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public CharacterController2D controller;
+    //Components
+    public Rigidbody2D rb;
     public Animator animator;
+    public Transform groundCheck;
+    public float checkRadius;
+    public LayerMask groundLayer;
 
+    //Movement Vars
     public float runSpeed = 40f;
-
-    public int keys = 0;
-
+    public float jumpForce = 700f;
     float horizontalMove = 0f;
+    bool facingRight = true;
+    public bool isGrounded;
 
+
+    //Doors & Buttons
+    public int keys = 0;
     float verticalMove = 0f;
-
-    bool jump = false;
-
     bool inDoor = false;
-
     bool inButton = false;
-
     Transform linkedDoor;
 
     Transform line;
 
-    // Update is called once per frame
     void Update()
     {
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
@@ -34,10 +36,18 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && isGrounded == true)
         {
-            jump = true;
+            rb.velocity = Vector2.up * jumpForce;
+        }
+
+        if(isGrounded != true)
+        {
             animator.SetBool("IsJumping", true);
+        }
+        else
+        {
+            animator.SetBool("IsJumping", false);
         }
 
         if(Input.GetButtonDown("Vertical") && verticalMove > 0)
@@ -62,8 +72,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime, false, jump);
-        jump = false;
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+
+        rb.velocity = new Vector2(horizontalMove * Time.deltaTime, rb.velocity.y);
+        if(facingRight == false && horizontalMove > 0)
+        {
+            Flip();
+        }else if(facingRight == true && horizontalMove < 0)
+        {
+            Flip();
+        }
+    }
+
+    private void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 Scaler = transform.localScale;
+        Scaler.x *= -1;
+        transform.localScale = Scaler;
     }
 
     public void OnLand()
