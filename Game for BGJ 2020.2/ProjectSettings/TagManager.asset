@@ -11,6 +11,7 @@ TagManager:
   - Button
   - Spikes
   - Hostile
+  - Win
   layers:
   - Default
   - TransparentFX

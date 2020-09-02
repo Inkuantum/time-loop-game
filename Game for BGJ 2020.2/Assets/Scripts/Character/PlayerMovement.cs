@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     bool inButton = false;
     Transform linkedDoor;
 
+    //Win
+    public GameObject winScreenUI;
+
     Transform line;
 
     void Update()
@@ -153,6 +156,10 @@ public class PlayerMovement : MonoBehaviour
         else if (collision.gameObject.tag.Equals("Hostile"))
         {
             transform.position = new Vector3(0.37f, 0f, 0f);
+        }
+        else if (collision.gameObject.tag.Equals("Win"))
+        {
+            winScreenUI.SetActive(true);
         }
 
     }
