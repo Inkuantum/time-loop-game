@@ -28,6 +28,10 @@ public class PlayerMovement : MonoBehaviour
 
     //Win
     public GameObject winScreenUI;
+	
+	//Checkpoint
+	public bool easyMode = false;
+	public Vector3 checkpoint = new Vector3(0.37f, 0f, 0f);
 
     Transform line;
 
@@ -151,7 +155,11 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (collision.gameObject.tag.Equals("Spikes"))
         {
-            transform.position = new Vector3(0.37f, 0f, 0f);
+			if(easyMode == false) {
+				transform.position = new Vector3(0.37f, 0f, 0f);				
+			}else {
+				transform.position = checkpoint;
+			}
         }
         else if (collision.gameObject.tag.Equals("Hostile"))
         {
