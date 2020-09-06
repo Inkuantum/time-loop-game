@@ -16,13 +16,22 @@ public class Line : MonoBehaviour
         Transform linkedLaser = transform.parent.GetComponent<Laser>().linkedLaser;
         LineRenderer lineRender = this.gameObject.GetComponent<LineRenderer>();
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, linkedLaser.position);
-        
+
 
         if (hitInfo){
             if (hitInfo.transform.tag.Equals("Player"))
             {
+                if (hitInfo.transform.GetComponent<PlayerMovement>().isEasyMode)
+                {
+                    hitInfo.transform.position = hitInfo.transform.GetComponent<PlayerMovement>().checkpoint;
+                    hitInfo.transform.GetComponent<TimeRewind>().activeHouse = hitInfo.transform.GetComponent<PlayerMovement>().rightHouse;
+                    hitInfo.transform.GetComponent<TimeRewind>().ChangeHouseState();
 
-                hitInfo.transform.position = new Vector3(0.37f, 0f, 0f);
+                }
+                else
+                {
+                    hitInfo.transform.position = new Vector3(0.37f, 0f, 0f);
+                }
             }
         }
     }

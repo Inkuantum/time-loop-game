@@ -11,6 +11,8 @@ public class TimeRewind : MonoBehaviour
 
     public GameObject rewindScreen;
 
+    public PauseMenu pauseMenu;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,10 +30,14 @@ public class TimeRewind : MonoBehaviour
             ChangeHouseState();
             rewindScreen.SetActive(true);
             StartCoroutine(DisableCanvas(2f * Time.deltaTime));
+            if (pauseMenu.isPaused)
+            {
+                pauseMenu.ChangeBackgroundState();
+            }
         }
     }
 
-    void ChangeHouseState()
+    public void ChangeHouseState()
     {
         //Loop through houses list
         for(int i = 0; i<houses.Count; i++)

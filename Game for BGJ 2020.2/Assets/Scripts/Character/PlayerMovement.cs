@@ -30,8 +30,12 @@ public class PlayerMovement : MonoBehaviour
     public GameObject winScreenUI;
 	
 	//Checkpoint
-	public bool easyMode = false;
+	public bool isEasyMode;
 	public Vector3 checkpoint = new Vector3(0.37f, 0f, 0f);
+    public int rightHouse;
+
+    //Pause
+    public GameObject pauseMenu;
 
     Transform line;
 
@@ -65,6 +69,12 @@ public class PlayerMovement : MonoBehaviour
                 {
                     transform.position = linkedDoor.position;
                     verticalMove = 0;
+
+                    if (isEasyMode)
+                    {
+                        checkpoint = linkedDoor.position;
+                        rightHouse = gameObject.GetComponent<TimeRewind>().activeHouse;
+                    }
                 }
             }else if (inButton == true)
             {
@@ -153,17 +163,17 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
-        else if (collision.gameObject.tag.Equals("Spikes"))
+        else if (collision.gameObject.tag.Equals("Spikes") || collision.gameObject.tag.Equals("Hostile"))
         {
-			if(easyMode == false) {
-				transform.position = new Vector3(0.37f, 0f, 0f);				
-			}else {
-				transform.position = checkpoint;
-			}
-        }
-        else if (collision.gameObject.tag.Equals("Hostile"))
-        {
-            transform.position = new Vector3(0.37f, 0f, 0f);
+			if(isEasyMode) {
+                transform.position = checkpoint;
+                gameObject.GetComponent<TimeRewind>().activeHouse = rightHouse;
+                gameObject.GetComponent<TimeRewind>().ChangeHouseState();
+
+            }
+            else {
+                transform.position = new Vector3(0.37f, 0f, 0f);
+            }
         }
         else if (collision.gameObject.tag.Equals("Win"))
         {
